@@ -1272,18 +1272,38 @@ html, body {
 }
 .progress-bar-wrapper {
   position: relative;
+  height: 20px;
+  cursor: pointer;
+  margin-bottom: 6px;
+  display: flex;
+  align-items: center;
+}
+.progress-bar-wrapper::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
   height: 4px;
   background: rgba(255,255,255,0.1);
   border-radius: 2px;
-  cursor: pointer;
-  margin-bottom: 10px;
+  transition: height 0.15s;
+}
+.progress-bar-wrapper:hover::before {
+  height: 6px;
 }
 .progress-fill {
-  height: 100%;
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  height: 4px;
   background: var(--accent);
   border-radius: 2px;
   pointer-events: none;
-  transition: width 0.1s linear;
+  transition: width 0.1s linear, height 0.15s;
+}
+.progress-bar-wrapper:hover .progress-fill {
+  height: 6px;
 }
 .chapter-dot {
   position: absolute;

@@ -10,7 +10,7 @@ const MACHINES = [
     lastServicedAgo: "4d ago",
     avgDowntime: "2.3 hrs",
     sessionsCount: 4,
-    videosCount: 3,
+    videosCount: 1,
     image: "thumbnails/machine1.jpg",
     sessions: [
       {
@@ -71,7 +71,7 @@ const MACHINES = [
         ],
         tools: ["Grease Gun", "Calibration Tool", "Inspection Checklist"],
         parts: [],
-        videoId: "v1-2",
+        videoId: null,
         month: "APRIL 2025"
       },
       {
@@ -103,7 +103,7 @@ const MACHINES = [
         ],
         tools: ["Bearing Puller", "Torque Wrench", "Rubber Mallet", "Dial Indicator"],
         parts: ["SKF Spindle Bearing #SB-7710 (x2)"],
-        videoId: "v1-3",
+        videoId: null,
         month: "MARCH 2025"
       },
       {
@@ -147,38 +147,10 @@ const MACHINES = [
         duration: "6:24",
         durationSecs: 384,
         severity: "critical",
-        file: "videos/video1.mp4",
+        file: "videos/cnc-milling.mp4",
         thumb: "thumbnails/thumb1.jpg",
         sessionId: "s1-1",
         month: "APRIL 2025"
-      },
-      {
-        id: "v1-2",
-        title: "Routine Inspection & Lubrication",
-        technician: "Sara Mohammed",
-        date: "April 3, 2025",
-        dateShort: "Apr 3",
-        duration: "4:10",
-        durationSecs: 250,
-        severity: "routine",
-        file: "videos/video2.mp4",
-        thumb: "thumbnails/thumb2.jpg",
-        sessionId: "s1-2",
-        month: "APRIL 2025"
-      },
-      {
-        id: "v1-3",
-        title: "Spindle Bearing Replacement",
-        technician: "Ahmed Al Mansoori",
-        date: "March 21, 2025",
-        dateShort: "Mar 21",
-        duration: "9:45",
-        durationSecs: 585,
-        severity: "warning",
-        file: "videos/video3.mp4",
-        thumb: "thumbnails/thumb3.jpg",
-        sessionId: "s1-3",
-        month: "MARCH 2025"
       }
     ],
     chat: []

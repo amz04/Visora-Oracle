@@ -536,13 +536,30 @@ document.getElementById('skipBackBtn').addEventListener('click', () => {
   videoEl.currentTime = Math.max(0, videoEl.currentTime - 10);
 });
 document.getElementById('skipFwdBtn').addEventListener('click', () => {
-  videoEl.currentTime = Math.min(videoEl.duration || 0, videoEl.currentTime + 10);
+  videoEl.currentTime += 10;
 });
 
-document.getElementById('progressBarWrapper').addEventListener('click', (e) => {
-  const rect = e.currentTarget.getBoundingClientRect();
-  const pct = (e.clientX - rect.left) / rect.width;
-  if (videoEl.duration) videoEl.currentTime = pct * videoEl.duration;
+function seekToFraction(clientX) {
+  const bar = document.getElementById('progressBarWrapper');
+  const rect = bar.getBoundingClientRect();
+  const pct = Math.max(0, Math.min(1, (clientX - rect.left) / rect.width));
+  if (videoEl.duration && !isNaN(videoEl.duration)) {
+    videoEl.currentTime = pct * videoEl.duration;
+  }
+}
+
+let isScrubbing = false;
+
+document.getElementById('progressBarWrapper').addEventListener('mousedown', (e) => {
+  isScrubbing = true;
+  seekToFraction(e.clientX);
+  e.preventDefault();
+});
+document.addEventListener('mousemove', (e) => {
+  if (isScrubbing) seekToFraction(e.clientX);
+});
+document.addEventListener('mouseup', () => {
+  isScrubbing = false;
 });
 
 document.getElementById('volumeSlider').addEventListener('input', (e) => {
