@@ -2,8 +2,8 @@
 // Cohere (embeddings) + Groq (LLM) + PDF.js (PDF parsing)
 // All API calls are made directly from the browser.
 
-const COHERE_API_KEY   = 'ECSZWCTF5I3aWj2setbXueduLHu2OFXbUGeSmUQR';
-const GROQ_API_KEY     = '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';
+const COHERE_API_KEY   = '';
+const GROQ_API_KEY     = '';
 const COHERE_EMBED_URL = 'https://api.cohere.com/v2/embed';
 const GROQ_CHAT_URL    = 'https://api.groq.com/openai/v1/chat/completions';
 const GROQ_MODEL       = 'llama-3.3-70b-versatile';
