@@ -179,17 +179,32 @@ function renderChatMessages() {
         </div>`;
     } else {
       let sourceHtml = '';
-      if (msg.source) {
-        if (typeof msg.source === 'string') {
-          // backward compat: existing demo data has plain string sources
-          sourceHtml = `<div class="chat-msg-source">📄 ${escapeHtml(msg.source)}</div>`;
-        } else {
-          // RAG path: { title, excerpt }
-          sourceHtml = `<div class="chat-msg-citation">
-            <div class="chat-msg-citation-title"><span>📄</span> ${escapeHtml(msg.source.title)}</div>
-            ${msg.source.excerpt ? `<div class="chat-msg-citation-excerpt">"${escapeHtml(msg.source.excerpt)}"</div>` : ''}
+      if (msg.citations && msg.citations.length > 0) {
+        const items = msg.citations.map(c => {
+          const full = c.excerpt || '';
+          const short = full.replace(/\s+/g, ' ').trim();
+          const preview = short.length > 65 ? short.slice(0, 65).trimEnd() + '…' : short;
+          const clickable = c.source_url ? `onclick="openPdfOverlay('${c.source_url}', ${c.page}, '${escapeHtml(c.title).replace(/'/g, "\\'")}')" style="cursor:pointer"` : '';
+          return `
+          <div class="chat-msg-ref-item" ${clickable}>
+            <div class="chat-msg-ref-header">
+              <span class="chat-msg-ref-title">📄 ${escapeHtml(c.title)}</span>
+              <span class="chat-msg-ref-page">p. ${c.page}</span>
+            </div>
+            <p class="chat-msg-ref-excerpt">${escapeHtml(preview)}<span class="chat-msg-ref-hint"> · click to open</span></p>
           </div>`;
-        }
+        }).join('');
+        sourceHtml = `
+          <div class="chat-msg-refs">
+            <button class="chat-msg-refs-toggle" onclick="this.parentElement.classList.toggle('open')">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="refs-chevron"><polyline points="6 9 12 15 18 9"></polyline></svg>
+              References (${msg.citations.length})
+            </button>
+            <div class="chat-msg-refs-list">${items}</div>
+          </div>`;
+      } else if (msg.source) {
+        // backward compat: demo data has plain string sources
+        sourceHtml = `<div class="chat-msg-source">📄 ${escapeHtml(msg.source)}</div>`;
       }
       html += `
         <div class="chat-msg ai">
@@ -237,9 +252,7 @@ async function sendMessage() {
     chatMessages.push({
       role: 'ai',
       text: result.answer,
-      source: result.citations.length > 0
-        ? { title: result.citations[0].title, excerpt: result.citations[0].excerpt }
-        : null
+      citations: result.citations,
     });
     renderChatMessages();
     chatArea.scrollTop = chatArea.scrollHeight;
@@ -632,9 +645,30 @@ function seekVideo(time) {
   }
 }
 
+// ── PDF Viewer Overlay ──
+function openPdfOverlay(sourceUrl, page, title) {
+  if (!sourceUrl) return;
+  document.getElementById('pdfOverlayTitle').textContent = title;
+  document.getElementById('pdfOverlayPage').textContent = `p. ${page}`;
+  document.getElementById('pdfFrame').src = `${sourceUrl}#page=${page}`;
+  document.getElementById('pdfOverlay').classList.add('open');
+  lucide.createIcons();
+}
+
+function closePdfOverlay() {
+  document.getElementById('pdfOverlay').classList.remove('open');
+  document.getElementById('pdfFrame').src = '';
+}
+
+document.getElementById('pdfOverlayClose').addEventListener('click', closePdfOverlay);
+document.getElementById('pdfOverlay').addEventListener('click', (e) => {
+  if (e.target === document.getElementById('pdfOverlay')) closePdfOverlay();
+});
+
 document.addEventListener('keydown', (e) => {
   if (e.key === 'Escape') {
-    if (document.getElementById('videoOverlay').classList.contains('open')) closeVideoOverlay();
+    if (document.getElementById('pdfOverlay').classList.contains('open')) closePdfOverlay();
+    else if (document.getElementById('videoOverlay').classList.contains('open')) closeVideoOverlay();
     else if (document.getElementById('sessionOverlay').classList.contains('open')) closeSessionOverlay();
   }
 });

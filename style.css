@@ -848,6 +848,91 @@ html, body {
   line-height: 1.5;
 }
 
+/* ── References dropdown ── */
+.chat-msg-refs {
+  margin-top: 10px;
+}
+
+.chat-msg-refs-toggle {
+  font-size: var(--text-xs);
+  font-family: inherit;
+  color: var(--accent);
+  background: rgba(245, 158, 11, 0.08);
+  border: 1px solid rgba(245, 158, 11, 0.18);
+  border-radius: var(--radius-sm);
+  padding: 4px 10px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  transition: background 0.15s;
+}
+
+.chat-msg-refs-toggle:hover {
+  background: rgba(245, 158, 11, 0.14);
+}
+
+.refs-chevron {
+  transition: transform 0.2s ease;
+  flex-shrink: 0;
+}
+
+.chat-msg-refs.open .refs-chevron {
+  transform: rotate(180deg);
+}
+
+.chat-msg-refs-list {
+  display: none;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+.chat-msg-refs.open .chat-msg-refs-list {
+  display: flex;
+}
+
+.chat-msg-ref-item {
+  padding: 10px 14px;
+  background: rgba(245, 158, 11, 0.05);
+  border: 1px solid rgba(245, 158, 11, 0.13);
+  border-radius: var(--radius-sm);
+}
+
+.chat-msg-ref-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 6px;
+}
+
+.chat-msg-ref-title {
+  font-size: var(--text-xs);
+  color: var(--accent);
+  font-weight: 500;
+}
+
+.chat-msg-ref-page {
+  font-size: var(--text-xs);
+  color: var(--text-muted);
+  flex-shrink: 0;
+  margin-left: 8px;
+}
+
+.chat-msg-ref-excerpt {
+  font-size: var(--text-xs);
+  color: var(--text-muted);
+  font-style: italic;
+  line-height: 1.6;
+  margin: 0;
+}
+
+.chat-msg-ref-hint {
+  font-style: normal;
+  color: var(--accent);
+  opacity: 0.7;
+}
+
 .chat-typing {
   display: flex;
   align-items: center;
@@ -1194,6 +1279,83 @@ html, body {
   justify-content: center;
   color: #0A0C10;
   flex-shrink: 0;
+}
+
+/* ── PDF Viewer Overlay ── */
+.pdf-overlay-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.82);
+  z-index: 500;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 250ms ease;
+}
+.pdf-overlay-backdrop.open { opacity: 1; pointer-events: all; }
+
+.pdf-overlay {
+  background: var(--card-bg);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-overlay);
+  width: 88vw;
+  height: 90vh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  transform: scale(0.97);
+  transition: transform 250ms ease;
+}
+.pdf-overlay-backdrop.open .pdf-overlay { transform: scale(1); }
+
+.pdf-overlay-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 18px;
+  border-bottom: 1px solid var(--border-subtle);
+  flex-shrink: 0;
+}
+
+.pdf-overlay-meta {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-width: 0;
+}
+
+.pdf-overlay-title {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text-primary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.pdf-overlay-page {
+  font-size: var(--text-xs);
+  color: var(--accent);
+  background: rgba(245, 158, 11, 0.1);
+  border: 1px solid rgba(245, 158, 11, 0.2);
+  border-radius: 4px;
+  padding: 2px 8px;
+  flex-shrink: 0;
+}
+
+.pdf-overlay-body {
+  flex: 1;
+  overflow: hidden;
+}
+
+.pdf-overlay-body iframe {
+  width: 100%;
+  height: 100%;
+  border: none;
+  display: block;
 }
 
 /* ── Video Preview Overlay ── */

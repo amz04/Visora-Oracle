@@ -180,12 +180,25 @@
     </div>
   </div>
 
+  <!-- PDF Viewer Overlay -->
+  <div class="pdf-overlay-backdrop" id="pdfOverlay">
+    <div class="pdf-overlay">
+      <div class="pdf-overlay-header">
+        <div class="pdf-overlay-meta">
+          <span class="pdf-overlay-title" id="pdfOverlayTitle"></span>
+          <span class="pdf-overlay-page" id="pdfOverlayPage"></span>
+        </div>
+        <button class="overlay-close-btn" id="pdfOverlayClose">
+          <i data-lucide="x" style="width:14px;height:14px;"></i>
+        </button>
+      </div>
+      <div class="pdf-overlay-body">
+        <iframe id="pdfFrame" src="" title="PDF Viewer"></iframe>
+      </div>
+    </div>
+  </div>
+
   <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
-  <script>
-    pdfjsLib.GlobalWorkerOptions.workerSrc =
-      'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
-  </script>
   <script src="config.js"></script>
   <script src="data.js"></script>
   <script src="rag.js"></script>
