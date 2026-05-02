@@ -179,7 +179,15 @@ GROQ_API_KEY=your-groq-key-here
 
 Get a free key at [console.groq.com](https://console.groq.com).
 
-### 3. Start the server
+### 3. Configure the frontend
+
+Create `config.js` in the project root (it is gitignored):
+
+```js
+const RAG_API_BASE = 'http://localhost:8000';
+```
+
+### 4. Start the server
 
 ```bash
 uvicorn app.main:app --reload
@@ -187,27 +195,7 @@ uvicorn app.main:app --reload
 
 The FastAPI server serves both the API and the frontend. Open `http://localhost:8000`.
 
-### 4. Ingest documents (first run only)
-
-Before the chatbot can answer questions, the PDFs must be parsed, chunked, and embedded into ChromaDB. Call the ingest endpoint for each machine:
-
-```bash
-# Machine 1 — CNC Milling Machine
-curl -X POST http://localhost:8000/rag/ingest -H "Content-Type: application/json" -d '{"machine_id": 1}'
-
-# Machine 2 — Belt Conveyor System
-curl -X POST http://localhost:8000/rag/ingest -H "Content-Type: application/json" -d '{"machine_id": 2}'
-```
-
-This only needs to run once — ChromaDB persists the vectors to disk. To force a full re-ingest (e.g. after changing chunk settings), add `"force": true` to the request body.
-
-### 5. Configure the frontend
-
-Create `config.js` in the project root (it is gitignored):
-
-```js
-const RAG_API_BASE = 'http://localhost:8000';
-```
+On first boot the server automatically ingests all PDFs into ChromaDB — you'll see progress in the terminal. Subsequent starts skip documents that are already indexed. No manual steps needed.
 
 ---
 
