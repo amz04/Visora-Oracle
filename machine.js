@@ -49,6 +49,12 @@ function setupStatusDropdown() {
   const trigger = document.getElementById('chatMachineStatus');
   trigger.classList.add('status-trigger');
 
+  const chevron = document.createElement('i');
+  chevron.setAttribute('data-lucide', 'chevron-down');
+  chevron.setAttribute('style', 'width:11px;height:11px;');
+  chevron.className = 'status-trigger-chevron';
+  trigger.appendChild(chevron);
+
   const dropdown = document.createElement('div');
   dropdown.className = 'status-dropdown';
   dropdown.innerHTML = STATUS_OPTIONS.map(o => `
