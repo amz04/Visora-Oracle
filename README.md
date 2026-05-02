@@ -179,15 +179,7 @@ GROQ_API_KEY=your-groq-key-here
 
 Get a free key at [console.groq.com](https://console.groq.com).
 
-### 3. Configure the frontend
-
-Create `config.js` in the project root (it is gitignored):
-
-```js
-const RAG_API_BASE = 'http://localhost:8000';
-```
-
-### 4. Start the server
+### 3. Start the server
 
 ```bash
 uvicorn app.main:app --reload
