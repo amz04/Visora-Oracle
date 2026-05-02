@@ -943,12 +943,159 @@ document.getElementById('pdfOverlay').addEventListener('click', (e) => {
 
 document.addEventListener('keydown', (e) => {
   if (e.key === 'Escape') {
-    if (document.getElementById('pdfOverlay').classList.contains('open')) closePdfOverlay();
+    if (document.getElementById('addInspEntryModal').classList.contains('open')) closeAddInspEntryModal();
+    else if (document.getElementById('uploadVideoModal').classList.contains('open')) closeUploadVideoModal();
+    else if (document.getElementById('addMaintenanceModal').classList.contains('open')) closeAddMaintenanceModal();
+    else if (document.getElementById('pdfOverlay').classList.contains('open')) closePdfOverlay();
     else if (document.getElementById('videoOverlay').classList.contains('open')) closeVideoOverlay();
     else if (document.getElementById('sessionOverlay').classList.contains('open')) closeSessionOverlay();
     else if (document.getElementById('workOrderOverlay').classList.contains('open')) closeWorkOrderOverlay();
     else if (document.getElementById('inspectionLogModal').classList.contains('open')) closeInspectionLogModal();
   }
+});
+
+// ── Upload Recording Modal ──
+function openUploadVideoModal() {
+  document.getElementById('uvMachine').value = machine.name;
+  document.getElementById('uploadVideoModal').classList.add('open');
+  lucide.createIcons();
+}
+function closeUploadVideoModal() {
+  document.getElementById('uploadVideoModal').classList.remove('open');
+  document.getElementById('uploadVideoForm').reset();
+}
+document.getElementById('uploadVideoBtn').addEventListener('click', openUploadVideoModal);
+document.getElementById('uploadVideoModalClose').addEventListener('click', closeUploadVideoModal);
+document.getElementById('uploadVideoCancelBtn').addEventListener('click', closeUploadVideoModal);
+document.getElementById('uploadVideoModal').addEventListener('click', (e) => {
+  if (e.target === document.getElementById('uploadVideoModal')) closeUploadVideoModal();
+});
+document.getElementById('uploadVideoForm').addEventListener('submit', (e) => {
+  e.preventDefault();
+  const title       = document.getElementById('uvTitle').value.trim();
+  const technician  = document.getElementById('uvTechnician').value.trim() || 'Unknown';
+  const severity    = document.getElementById('uvSeverity').value;
+  const duration    = document.getElementById('uvDuration').value.trim() || '0:00';
+  const description = document.getElementById('uvDescription').value.trim();
+  if (!title) return;
+
+  const now       = new Date();
+  const month     = now.toLocaleString('en-US', { month: 'long' }).toUpperCase() + ' ' + now.getFullYear();
+  const dateShort = now.toLocaleString('en-US', { month: 'short' }) + ' ' + now.getDate();
+  const date      = now.toLocaleString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
+
+  if (!machine.videos) machine.videos = [];
+  machine.videos.unshift({
+    id: 'v-new-' + Date.now(),
+    title, technician, date, dateShort, duration, severity,
+    file: '', thumb: '', sessionId: null, month,
+    summary: description || 'Recording uploaded by senior technician.',
+    resources: [],
+  });
+  renderVideos();
+  closeUploadVideoModal();
+});
+
+// ── Add Maintenance Entry Modal ──
+function openAddMaintenanceModal() {
+  document.getElementById('amDate').valueAsDate = new Date();
+  document.getElementById('addMaintenanceModal').classList.add('open');
+  lucide.createIcons();
+}
+function closeAddMaintenanceModal() {
+  document.getElementById('addMaintenanceModal').classList.remove('open');
+  document.getElementById('addMaintenanceForm').reset();
+}
+document.getElementById('addMaintenanceBtn').addEventListener('click', openAddMaintenanceModal);
+document.getElementById('addMaintenanceModalClose').addEventListener('click', closeAddMaintenanceModal);
+document.getElementById('addMaintenanceCancelBtn').addEventListener('click', closeAddMaintenanceModal);
+document.getElementById('addMaintenanceModal').addEventListener('click', (e) => {
+  if (e.target === document.getElementById('addMaintenanceModal')) closeAddMaintenanceModal();
+});
+document.getElementById('addMaintenanceForm').addEventListener('submit', (e) => {
+  e.preventDefault();
+  const dateVal     = document.getElementById('amDate').value;
+  const title       = document.getElementById('amTitle').value.trim();
+  const technician  = document.getElementById('amTechnician').value.trim();
+  const severity    = document.getElementById('amSeverity').value;
+  const type        = document.getElementById('amType').value;
+  const description = document.getElementById('amDescription').value.trim();
+  if (!title || !technician) return;
+
+  const dateObj   = dateVal ? new Date(dateVal + 'T00:00:00') : new Date();
+  const month     = dateObj.toLocaleString('en-US', { month: 'long' }).toUpperCase() + ' ' + dateObj.getFullYear();
+  const dateShort = dateObj.toLocaleString('en-US', { month: 'short' }) + ' ' + dateObj.getDate();
+  const date      = dateObj.toLocaleString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
+
+  if (!machine.sessions) machine.sessions = [];
+  machine.sessions.unshift({
+    id: 's-new-' + Date.now(),
+    title, date, dateShort, technician, severity,
+    trigger: type, outcome: 'Logged', outcomeStatus: 'resolved',
+    downtime: '—', summary: description || 'Maintenance entry added manually.',
+    steps: [], timestamps: [], tools: [], parts: [],
+    videoId: null, month,
+  });
+  renderLog();
+  closeAddMaintenanceModal();
+});
+
+// ── Add Inspection Entry Modal ──
+function openAddInspEntryModal() {
+  document.getElementById('aieDate').valueAsDate = new Date();
+  document.getElementById('addInspEntryModal').classList.add('open');
+  lucide.createIcons();
+}
+function closeAddInspEntryModal() {
+  document.getElementById('addInspEntryModal').classList.remove('open');
+  document.getElementById('addInspEntryForm').reset();
+}
+document.getElementById('addInspEntryBtn').addEventListener('click', openAddInspEntryModal);
+document.getElementById('addInspEntryModalClose').addEventListener('click', closeAddInspEntryModal);
+document.getElementById('addInspEntryCancelBtn').addEventListener('click', closeAddInspEntryModal);
+document.getElementById('addInspEntryModal').addEventListener('click', (e) => {
+  if (e.target === document.getElementById('addInspEntryModal')) closeAddInspEntryModal();
+});
+document.getElementById('addInspEntryForm').addEventListener('submit', (e) => {
+  e.preventDefault();
+  const woNum      = document.getElementById('aieWONum').value.trim();
+  const dateVal    = document.getElementById('aieDate').value;
+  const type       = document.getElementById('aieType').value;
+  const status     = document.getElementById('aieStatus').value;
+  const technician = document.getElementById('aieTechnician').value.trim();
+  const timeTaken  = document.getElementById('aieTimeTaken').value.trim() || '—';
+  if (!woNum || !technician) return;
+
+  const dateObj   = dateVal ? new Date(dateVal + 'T00:00:00') : new Date();
+  const dateShort = dateObj.toLocaleString('en-US', { month: 'short' }) + ' ' + dateObj.getDate();
+  const statusClass = status.toLowerCase().replace(/\s+/g, '-');
+
+  const tableWrap = document.getElementById('inspTableWrap');
+  const header    = tableWrap.querySelector('.insp-wo-header');
+  const newRow    = `
+    <div class="insp-wo-row" style="cursor:default;">
+      <span class="insp-wo-num">${woNum}</span>
+      <span class="insp-wo-cell">${dateShort}</span>
+      <span class="insp-wo-cell">${type}</span>
+      <span class="insp-wo-cell">${technician}</span>
+      <span class="insp-wo-cell">${timeTaken}</span>
+      <span class="wo-badge ${statusClass}">${status}</span>
+    </div>`;
+
+  if (header) {
+    header.insertAdjacentHTML('afterend', newRow);
+  } else {
+    tableWrap.innerHTML = `
+      <div class="insp-wo-header">
+        <span class="insp-col-label">WO #</span>
+        <span class="insp-col-label">Date</span>
+        <span class="insp-col-label">Type</span>
+        <span class="insp-col-label">Technician</span>
+        <span class="insp-col-label">Time Taken</span>
+        <span class="insp-col-label">Status</span>
+      </div>` + newRow;
+  }
+  closeAddInspEntryModal();
 });
 
 initPage();

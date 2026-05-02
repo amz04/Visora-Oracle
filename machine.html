@@ -19,10 +19,14 @@
       <span class="navbar-wordmark">Visora</span>
     </a>
     <div class="navbar-actions">
-      <div class="navbar-icon-btn">
-        <i data-lucide="settings" style="width:16px;height:16px;"></i>
+      <div class="navbar-user-info" id="navUserInfo">
+        <span class="navbar-user-name" id="navUserName"></span>
+        <span class="navbar-role-badge" id="navRoleBadge"></span>
       </div>
-      <div class="navbar-avatar">TW</div>
+      <div class="navbar-avatar" id="navAvatar"></div>
+      <button class="navbar-icon-btn" id="signOutBtn" title="Sign out">
+        <i data-lucide="log-out" style="width:16px;height:16px;"></i>
+      </button>
     </div>
   </nav>
 
@@ -44,9 +48,14 @@
         <div class="panel-section">
           <div class="panel-header">
             <span class="panel-header-title">Maintenance Log</span>
-            <button class="panel-icon-btn" title="Filter">
-              <i data-lucide="sliders-horizontal" style="width:14px;height:14px;"></i>
-            </button>
+            <div style="display:flex;align-items:center;gap:4px;">
+              <button class="panel-icon-btn" title="Filter">
+                <i data-lucide="sliders-horizontal" style="width:14px;height:14px;"></i>
+              </button>
+              <button class="panel-icon-btn senior-only" id="addMaintenanceBtn" title="Add entry">
+                <i data-lucide="plus" style="width:14px;height:14px;"></i>
+              </button>
+            </div>
           </div>
           <div class="log-scroll" id="logScroll"></div>
         </div>
@@ -107,9 +116,14 @@
     <div class="panel-right">
       <div class="panel-header">
         <span class="panel-header-title">Recordings</span>
-        <button class="panel-icon-btn" title="Sort">
-          <i data-lucide="arrow-up-down" style="width:14px;height:14px;"></i>
-        </button>
+        <div style="display:flex;align-items:center;gap:4px;">
+          <button class="panel-icon-btn" title="Sort">
+            <i data-lucide="arrow-up-down" style="width:14px;height:14px;"></i>
+          </button>
+          <button class="panel-icon-btn senior-only" id="uploadVideoBtn" title="Upload recording">
+            <i data-lucide="upload" style="width:14px;height:14px;"></i>
+          </button>
+        </div>
       </div>
       <div class="video-scroll" id="videoScroll"></div>
     </div>
@@ -241,9 +255,15 @@
     <div class="insp-modal-card">
       <div class="insp-modal-header">
         <span class="insp-modal-title">Inspection Log</span>
-        <button class="overlay-close-btn" id="inspModalClose">
-          <i data-lucide="x" style="width:14px;height:14px;"></i>
-        </button>
+        <div style="display:flex;align-items:center;gap:8px;">
+          <button class="btn-ai senior-only" id="addInspEntryBtn" style="font-size:12px;padding:5px 10px;gap:5px;">
+            <i data-lucide="plus" style="width:12px;height:12px;"></i>
+            Add Entry
+          </button>
+          <button class="overlay-close-btn" id="inspModalClose">
+            <i data-lucide="x" style="width:14px;height:14px;"></i>
+          </button>
+        </div>
       </div>
       <div class="insp-equipment-grid" id="inspEquipmentGrid"></div>
       <div class="insp-table-wrap" id="inspTableWrap"></div>
@@ -266,10 +286,188 @@
     </div>
   </div>
 
+  <!-- Upload Recording Modal -->
+  <div class="form-modal-backdrop" id="uploadVideoModal">
+    <div class="modal-form-card">
+      <div class="modal-form-header">
+        <span class="modal-form-title">Upload Recording</span>
+        <button class="overlay-close-btn" id="uploadVideoModalClose">
+          <i data-lucide="x" style="width:14px;height:14px;"></i>
+        </button>
+      </div>
+      <form class="modal-form-body" id="uploadVideoForm" novalidate>
+        <div class="form-group">
+          <label class="form-label" for="uvTitle">Title</label>
+          <input class="form-input" type="text" id="uvTitle" placeholder="e.g. Belt Tension Adjustment" required>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Machine</label>
+          <input class="form-input" type="text" id="uvMachine" disabled>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="uvTechnician">Technician</label>
+          <input class="form-input" type="text" id="uvTechnician" placeholder="Full name">
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label" for="uvSeverity">Severity</label>
+            <select class="form-input form-select" id="uvSeverity">
+              <option value="routine">Routine</option>
+              <option value="warning">Warning</option>
+              <option value="critical">Critical</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="uvDuration">Duration</label>
+            <input class="form-input" type="text" id="uvDuration" placeholder="e.g. 2:30">
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="uvDescription">Description</label>
+          <textarea class="form-input form-textarea" id="uvDescription" rows="3" placeholder="What does this recording cover?"></textarea>
+        </div>
+        <div class="modal-form-footer">
+          <button type="button" class="btn-details" id="uploadVideoCancelBtn">Cancel</button>
+          <button type="submit" class="btn-ai">
+            <i data-lucide="upload" style="width:13px;height:13px;"></i>
+            Upload Recording
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Add Maintenance Entry Modal -->
+  <div class="form-modal-backdrop" id="addMaintenanceModal">
+    <div class="modal-form-card">
+      <div class="modal-form-header">
+        <span class="modal-form-title">Add Maintenance Entry</span>
+        <button class="overlay-close-btn" id="addMaintenanceModalClose">
+          <i data-lucide="x" style="width:14px;height:14px;"></i>
+        </button>
+      </div>
+      <form class="modal-form-body" id="addMaintenanceForm" novalidate>
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label" for="amDate">Date</label>
+            <input class="form-input" type="date" id="amDate" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="amSeverity">Severity</label>
+            <select class="form-input form-select" id="amSeverity">
+              <option value="routine">Routine</option>
+              <option value="warning">Warning</option>
+              <option value="critical">Critical</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="amTitle">Title</label>
+          <input class="form-input" type="text" id="amTitle" placeholder="e.g. Bearing Replacement" required>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label" for="amTechnician">Technician</label>
+            <input class="form-input" type="text" id="amTechnician" placeholder="Full name" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="amType">Type</label>
+            <select class="form-input form-select" id="amType">
+              <option value="Corrective">Corrective</option>
+              <option value="Preventive">Preventive</option>
+              <option value="Inspection">Inspection</option>
+              <option value="Emergency">Emergency</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="amDescription">Description</label>
+          <textarea class="form-input form-textarea" id="amDescription" rows="3" placeholder="Describe the maintenance work performed..."></textarea>
+        </div>
+        <div class="modal-form-footer">
+          <button type="button" class="btn-details" id="addMaintenanceCancelBtn">Cancel</button>
+          <button type="submit" class="btn-ai">
+            <i data-lucide="plus" style="width:13px;height:13px;"></i>
+            Add Entry
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Add Inspection Entry Modal (z-top stacks above inspection log) -->
+  <div class="form-modal-backdrop z-top" id="addInspEntryModal">
+    <div class="modal-form-card">
+      <div class="modal-form-header">
+        <span class="modal-form-title">Add Work Order Entry</span>
+        <button class="overlay-close-btn" id="addInspEntryModalClose">
+          <i data-lucide="x" style="width:14px;height:14px;"></i>
+        </button>
+      </div>
+      <form class="modal-form-body" id="addInspEntryForm" novalidate>
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label" for="aieWONum">WO #</label>
+            <input class="form-input" type="text" id="aieWONum" placeholder="e.g. #0042" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="aieDate">Date</label>
+            <input class="form-input" type="date" id="aieDate" required>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label" for="aieType">Type</label>
+            <select class="form-input form-select" id="aieType">
+              <option>Corrective</option>
+              <option>Preventive</option>
+              <option>Inspection</option>
+              <option>Emergency</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="aieStatus">Status</label>
+            <select class="form-input form-select" id="aieStatus">
+              <option value="Open">Open</option>
+              <option value="In Progress">In Progress</option>
+              <option value="Closed">Closed</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label" for="aieTechnician">Technician</label>
+            <input class="form-input" type="text" id="aieTechnician" placeholder="Full name" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="aieTimeTaken">Time Taken</label>
+            <input class="form-input" type="text" id="aieTimeTaken" placeholder="e.g. 2h 30m">
+          </div>
+        </div>
+        <div class="modal-form-footer">
+          <button type="button" class="btn-details" id="addInspEntryCancelBtn">Cancel</button>
+          <button type="submit" class="btn-ai">Add Entry</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
   <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
   <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
   <script src="data.js"></script>
   <script src="rag.js"></script>
   <script src="machine.js"></script>
+  <script type="module">
+    import { auth, onAuthStateChanged, applySession, setupSignOut } from './auth.js';
+
+    document.body.style.visibility = 'hidden';
+
+    onAuthStateChanged(auth, async user => {
+      if (!user) { window.location.replace('login.html'); return; }
+      await applySession(user);
+      setupSignOut('login.html');
+      document.body.style.visibility = 'visible';
+    });
+  </script>
 </body>
 </html>

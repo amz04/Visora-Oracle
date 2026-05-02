@@ -114,6 +114,8 @@ No frontend frameworks or build tools.
 Visora-Oracle/
 ├── index.html                  # Homepage — machine grid
 ├── machine.html                # Machine details — chatbot + sessions + videos
+├── login.html                  # Sign-in page (Firebase Auth)
+├── auth.js                     # Shared Firebase Auth + Firestore session module
 ├── style.css                   # Global styles and design tokens
 ├── main.js                     # Homepage logic and interactions
 ├── machine.js                  # Machine details page logic
@@ -184,15 +186,32 @@ GROQ_API_KEY=your-groq-key-here
 
 Get a free key at [console.groq.com](https://console.groq.com).
 
-### 3. Start the server
+### 3. Start both servers (two terminals)
 
+**Terminal 1 — RAG backend:**
 ```bash
 uvicorn app.main:app --reload
 ```
 
-The FastAPI server serves both the API and the frontend. Open `http://localhost:8000`.
+On first boot the server automatically ingests all PDFs into ChromaDB — you'll see progress in the terminal. Subsequent starts skip documents that are already indexed.
 
-On first boot the server automatically ingests all PDFs into ChromaDB — you'll see progress in the terminal. Subsequent starts skip documents that are already indexed. No manual steps needed.
+**Terminal 2 — Frontend (required for ES module + Firebase Auth):**
+```bash
+python -m http.server 8080
+```
+
+Open `http://localhost:8080/login.html` in your browser.
+
+> The frontend uses ES modules and Firebase Auth, which require an HTTP origin — opening `index.html` directly as a `file://` URL will not work.
+
+### 4. Demo accounts
+
+| Role | Email | Password |
+| ---- | ----- | -------- |
+| Trainee | `trainee@visora.ae` | `trainee1234` |
+| Senior Technician | `senior@visora.ae` | `senior1234` |
+
+Trainees can browse machines and chat with the AI. Senior technicians can also upload recordings, add maintenance entries, add inspection log entries, and change machine status.
 
 ---
 
@@ -200,7 +219,6 @@ On first boot the server automatically ingests all PDFs into ChromaDB — you'll
 
 The following are intentionally out of scope for this version:
 
-- User authentication
 - File upload or AR glasses connectivity
 - Mobile responsive layout (desktop only, 1280px+)
 

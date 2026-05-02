@@ -19,10 +19,14 @@
       <span class="navbar-wordmark">Visora</span>
     </a>
     <div class="navbar-actions">
-      <div class="navbar-icon-btn">
-        <i data-lucide="settings" style="width:16px;height:16px;"></i>
+      <div class="navbar-user-info" id="navUserInfo">
+        <span class="navbar-user-name" id="navUserName"></span>
+        <span class="navbar-role-badge" id="navRoleBadge"></span>
       </div>
-      <div class="navbar-avatar">TW</div>
+      <div class="navbar-avatar" id="navAvatar"></div>
+      <button class="navbar-icon-btn" id="signOutBtn" title="Sign out">
+        <i data-lucide="log-out" style="width:16px;height:16px;"></i>
+      </button>
     </div>
   </nav>
 
@@ -138,5 +142,17 @@
   <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
   <script src="data.js"></script>
   <script src="main.js"></script>
+  <script type="module">
+  import { auth, onAuthStateChanged, applySession, setupSignOut } from './auth.js';
+
+  document.body.style.visibility = 'hidden';
+
+  onAuthStateChanged(auth, async user => {
+    if (!user) { window.location.replace('login.html'); return; }
+    await applySession(user);
+    setupSignOut('login.html');
+    document.body.style.visibility = 'visible';
+  });
+</script>
 </body>
 </html>
