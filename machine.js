@@ -94,8 +94,7 @@ const collapseIcon = document.getElementById('collapseIcon');
 collapseBtn.addEventListener('click', () => {
   panelCollapsed = !panelCollapsed;
   panelLeft.classList.toggle('collapsed', panelCollapsed);
-  collapseIcon.setAttribute('data-lucide', panelCollapsed ? 'chevron-right' : 'chevron-left');
-  lucide.createIcons();
+  collapseBtn.classList.toggle('arrow-flipped', panelCollapsed);
 });
 
 // ── Maintenance Log ──
@@ -1097,5 +1096,6 @@ document.getElementById('addInspEntryForm').addEventListener('submit', (e) => {
   }
   closeAddInspEntryModal();
 });
+
 
 initPage();
